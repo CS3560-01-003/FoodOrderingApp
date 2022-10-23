@@ -8,7 +8,7 @@
 import java.io.*;
 import java.util.*;
 
-class Order 
+public class Order 
 {
     //Atributes of Order
         int orderID;
@@ -20,7 +20,7 @@ class Order
         String orderType;
 
     //Constructor of Order class
-        Order(int orderID, int customerID, String orderDate, String orderTime, int numberOfProducts, String paymentType, String orderType)
+        public Order(int orderID, int customerID, String orderDate, String orderTime, int numberOfProducts, String paymentType, String orderType)
         {
             this.orderID = orderID;
             this.customerID = customerID;
@@ -31,7 +31,67 @@ class Order
             this. orderType = orderType;
 
         }
+        
+    //setter methods for each class attribute 
 
+        public void setOrderID(int orderID)
+        {
 
+        }
+        public void setCustomerID(int customerID)
+        {
+
+        }
+        public void setOrderDate(int orderDate)
+        {
+
+        }
+        public void setOrderTime(int orderTime)
+        {
+
+        }
+        public void setNumberOfProducts(int numberOfProducts)
+        {
+
+        }
+        public void setPaymentType(int paymentType)
+        {
+
+        }
+        public void setOrderType(int orderType)
+        {
+
+        }
+
+    //getter method for each class attribute
+
+        public int getOrderID()
+        {
+
+        }
+        public int getCustomerID()
+        {
+
+        }
+        public String getOrderDate()
+        {
+
+        }
+        public String getOrderTime()
+        {
+
+        }
+        public int getNumberOfProducts()
+        {
+
+        }
+        public String getPaymentType()
+        {
+
+        }
+        public String getOrderType()
+        {
+
+        }
 }
 
