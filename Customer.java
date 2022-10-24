@@ -14,7 +14,7 @@ public class Customer
 	private String address;
 	private String phoneNum;
 	private String email;
-	private boolean status;
+
 	
 	//Constructor method for Customer class
 	public Customer(int customerID, String customerName, String address, String phoneNum, String email, boolean status)
@@ -24,7 +24,7 @@ public class Customer
 		this.address = address;
 		this.phoneNum = phoneNum;
 		this.email = email;
-		this.status = status;
+	
 	}
 	
 	//setter methods for each class attribute
@@ -58,10 +58,6 @@ public class Customer
 		
 	}
 	
-	public void setStatus(boolean status)
-	{
-		
-	}
 	
 	//getter methods for each class attribute
 	public int getCustomerID()
@@ -89,9 +85,5 @@ public class Customer
 		
 	}
 	
-	public boolean getStatus()
-	{
-		
-	}
 	
 }
