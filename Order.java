@@ -18,6 +18,7 @@ public class Order
         int numberOfProducts;
         String paymentType;
         String orderType;
+        boolean orderStatus;
 
     //Constructor of Order class
         public Order(int orderID, int customerID, String orderDate, String orderTime, int numberOfProducts, String paymentType, String orderType)
@@ -28,7 +29,8 @@ public class Order
             this.orderTime = orderTime;
             this.numberOfProducts = numberOfProducts;
             this.paymentType = paymentType;
-            this. orderType = orderType;
+            this.orderType = orderType;
+            this.orderStatus = orderStatus;
 
         }
         
@@ -62,6 +64,10 @@ public class Order
         {
 
         }
+        public void setOrderStatus(boolean orderStatus)
+        {
+
+        }
 
     //getter method for each class attribute
 
@@ -90,6 +96,10 @@ public class Order
 
         }
         public String getOrderType()
+        {
+
+        }
+        public boolean getOrderStatus(boolean orderStatus)
         {
 
         }
