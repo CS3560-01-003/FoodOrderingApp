@@ -5,6 +5,7 @@ USE foodorderingapp;
 Create Table Customer( 
     customer_ID VARCHAR (50),
     customer_Name VARCHAR (50),
+    password VARCHAR (50),
     address VARCHAR (10),
     phone_Number INT (11),
     email VARCHAR (50),
