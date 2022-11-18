@@ -1,3 +1,16 @@
+DROP DATABASE IF EXISTS foodorderingapp;
+CREATE DATABASE foodorderingapp; 
+USE foodorderingapp;
+
+Create Table Customer( 
+    customer_ID VARCHAR (50),
+    customer_Name VARCHAR (50),
+    address VARCHAR (10),
+    phone_Number INT (11),
+    email VARCHAR (50),
+    PRIMARY KEY (customer_ID)
+    );
+    
 Create Table Payment( 
     payment_ID INT (6), 
     customer_ID VARCHAR (50),
@@ -10,5 +23,4 @@ Create Table Payment(
     PRIMARY KEY (payment_ID)
     );
     
-
 
