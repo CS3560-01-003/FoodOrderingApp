@@ -137,34 +137,7 @@ public Login()
            //     }
             }
 
-        //    private void uLogin(String user_name, String password, boolean is_buyer, boolean is_seller) throws SQLException
-           // {
-
-          //  }
-            // @Override
-            /**  public void actionPerformed(ActionEvent e)
-             {
-             String user_name = userNameTextField.getText();
-             String password = passwordTextField.getText();
-             boolean is_buyer = buyerRadioButton.isSelected();
-             boolean is_seller = sellerRadioButton.isSelected();
-
-             if (user_name.isEmpty() ||
-             password.isEmpty())
-             {
-             JOptionPane.showMessageDialog(this, "Username / Password should not be empty.", "", JOptionPane.ERROR_MESSAGE);
-             } else
-             {
-             try
-             {
-             uLogin(user_name, password, is_buyer, is_seller);
-             }
-             catch (SQLException ex)
-             {
-             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-             }
-             }
-             } **/
+       
 
 
         });
