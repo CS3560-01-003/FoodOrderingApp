@@ -169,9 +169,67 @@ public class Admin
             @Override
             public void actionPerformed(ActionEvent e)
             {
+  String item, price, description, menuId;
+                item = txtItem.getText();
+                price = txtPrice.getText();
+                description = txtDescription.getText();
+                menuId = txtId.getText();
+
+try {
+                  //given the inputted id number update the item,price and description
+    PreparedStatement pst = dbconn.prepareStatement("update menuItem set item,price,description where idmenuitem = ?");
+         pst.setString(1, item);
+         pst.setString(2, price);
+         pst.setString(3, description);
+         pst.setString(4, menuId);
+        pst.executeQuery();
 
 
+        JOptionPane.showMessageDialog(null,"Item Updated");
+
+          InventoryTable();// Calling this table so it can show the updated table
+
+            txtItem.setText("");
+            txtPrice.setText("");
+            txtDescription.setText("");
+
+            txtItem.requestFocus();
+            txtId.setText("");
+}catch(SQLException ex){
+
+
+}
             }
         });
+                      deleteButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String menuID = txtId.getText();
+    try{
+
+        PreparedStatement pst = dbconn.prepareStatement("delete * FROM menuItem where idmenuitem = ?");
+          pst.setString(1, menuID);
+          pst.executeQuery();
+        JOptionPane.showMessageDialog(null,"Item Deleted");
+
+        InventoryTable();
+
+
+        txtItem.setText("");
+        txtPrice.setText("");
+        txtDescription.setText("");
+
+        txtItem.requestFocus();
+        txtId.setText("");
+
+    }catch(SQLException e1){
+
+e1.printStackTrace();
+    }
+            }
+        });
+
     }
 }
