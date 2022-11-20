@@ -37,41 +37,28 @@ public class Admin
     }
 
 
-    void InventoryTable()
-    {
-        DBConnection conn = new DBConnection();
-        DefaultTableModel model = (DefaultTableModel) table1.getModel();
-        model.getDataVector().removeAllElements();
-        model.fireTableDataChanged();
-
-        Object rowData[] = new Object[4]; //create an array for the attributes
-
-        java.sql.Connection dbconn = conn.connectDB();
-        // Connection dbconn = conn.connectDB();
-        try
+ void InventoryTable()
         {
 
-            PreparedStatement pst = dbconn.prepareStatement("SELECT * FORM menuitem ORDER BY id ASC");
+            //  JTable Table= new JTable();
+            try
+            {
 
-            ResultSet res = pst.executeQuery();
+                PreparedStatement pst = dbconn.prepareStatement("SELECT * FROM menuitem");
 
-            while(res.next()) {  //
-                rowData[0] = res.getInt("id");
-                rowData[1] = res.getString("item");
-                rowData[2] = res.getDouble("price");
-                rowData[3] = res.getString("description");
+                ResultSet res = pst.executeQuery();
 
-                model.addRow(rowData);
+                table1.setModel(DbUtils.resultSetToTableModel(res)); //need to download rsxml
+
+
             }
-          //  res.close();
-          //  pst.close();
 
-            //table1.setModel(DbUtils.reusltSetToTableModel(rs));
-        }catch (SQLException e){
+            catch (SQLException e)
+            {
 
-            e.printStackTrace();
+                e.printStackTrace();
+            }
         }
-    }
 
     public Admin()
     {
