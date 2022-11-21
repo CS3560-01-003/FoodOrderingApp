@@ -41,7 +41,7 @@ Create Table customerOrder(
 	itemID INT,
     itemName VARCHAR (45),
     itemDescription VARCHAR (45) NOT NULL,
-    itemPrice DECIMAL (2,0) NOT NULL,
+    itemPrice DECIMAL (5,2) NOT NULL,
     itemImage LONGBLOB,
     itemAvailability VARCHAR (45) NOT NULL,
     PRIMARY KEY (itemID)
