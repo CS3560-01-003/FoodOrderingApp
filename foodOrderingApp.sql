@@ -2,26 +2,54 @@ DROP DATABASE IF EXISTS foodorderingapp;
 CREATE DATABASE foodorderingapp; 
 USE foodorderingapp;
 
-Create Table Customer( 
-    customer_ID VARCHAR (50),
-    customer_Name VARCHAR (50),
-    password VARCHAR (50),
-    address VARCHAR (10),
-    phone_Number INT (11),
-    email VARCHAR (50),
-    PRIMARY KEY (customer_ID)
+Create Table User( 
+    userID INT,
+    userName VARCHAR (45) NOT NULL,
+    userAddress VARCHAR (45) NOT NULL,
+    loginUser VARCHAR (45) NOT NULL,
+    userEmail INT (45) NOT NULL,
+    loginPassword VARCHAR (45) NOT NULL,
+    accessType VARCHAR (45) NOT NULL,
+    PRIMARY KEY (userID)
     );
     
 Create Table Payment( 
-    payment_ID INT (6), 
-    customer_ID VARCHAR (50),
-    card_Name VARCHAR (50) NOT NULL,
-    cardType VARCHAR (10) NOT NULL,
-    card_Number INT (16) NOT NULL,
-    cardExp INT (4) NOT NULL,
-    cardSecure int (3) NOT NULL, 
-    FOREIGN KEY (customer_ID) REFERENCES customer(customer_ID),
-    PRIMARY KEY (payment_ID)
+    userID INT (6), 
+    customerName VARCHAR (45),
+    cardType VARCHAR (45) NOT NULL,
+    cardNumber INT NOT NULL,
+    cardExp INT NOT NULL,
+    cardSecure INT NOT NULL, 
+    FOREIGN KEY (userID) REFERENCES User(userID),
+    PRIMARY KEY (cardNumber)
     );
     
-
+Create Table customerOrder(
+	orderID INT,
+    userID INT,
+    orderDate DATETIME,
+    orderTime DATETIME,
+    numOfProducts INT NOT NULL,
+    cardNumber INT NOT NULL,
+    orderType VARCHAR (45),
+    orderStatus VARCHAR (45),
+    FOREIGN KEY (cardNumber) REFERENCES Payment(cardNumber),
+    PRIMARY KEY (orderID)
+    );
+    
+    Create Table menuItems(
+	itemID INT,
+    itemName VARCHAR (45),
+    itemDescription VARCHAR (45) NOT NULL,
+    itemPrice DECIMAL (2,0) NOT NULL,
+    itemImage BLOB,
+    itemAvailability VARCHAR (45) NOT NULL,
+    PRIMARY KEY (itemID)
+    );
+    
+Create Table orderItems(
+	itemID INT,
+    itemQuantity INT NOT NULL,
+    FOREIGN KEY (itemID) REFERENCES menuItems(itemID),
+    PRIMARY KEY (itemID)
+    );
