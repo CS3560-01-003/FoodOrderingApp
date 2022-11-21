@@ -53,3 +53,9 @@ Create Table orderItems(
     FOREIGN KEY (itemID) REFERENCES menuItems(itemID),
     PRIMARY KEY (itemID)
     );
+    
+INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('001', 'Classic Cheeseburge', 'juicy', '11.99', ?, 'in stock');
+INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('002', 'Boneless Chicken Wings', 'saucy', '16.99', ?, 'in stock');
+INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('003', 'Pecan Pie Slice', 'sweet', '3.99', ?, 'out of stock');
+INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('004', 'Class Jenny’s Breakfast', 'yum', '11.99', ?, 'in stock');
+
