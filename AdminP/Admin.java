@@ -37,7 +37,7 @@ public class Admin
     }
 
 
- void InventoryTable()
+ void InventoryTable() //function to create a table of our inventory
         {
 
             //  JTable Table= new JTable();
@@ -64,16 +64,16 @@ public class Admin
     {
 
 
-        DBConnection conn = new DBConnection();
-        InventoryTable();
-        saveButton.addActionListener(new ActionListener()
+        DBConnection conn = new DBConnection(); //making the connection
+        InventoryTable(); //call the table
+        saveButton.addActionListener(new ActionListener() //
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
 
                 String menuItem,price,decription;
-//getting the inputted texts
+                                                  //getting the inputted texts
                 menuItem = txtItem.getText();
                 price= txtPrice.getText();
                 decription = txtDescription.getText();
@@ -84,7 +84,7 @@ public class Admin
                 try{
 
                     PreparedStatement pst = dbconn.prepareStatement("insert INTO menuItem(item,price,description) " +
-                            "Values(?,?,?)"); //SQL query to insert inputted items into our Table
+                            "Values(?,?,?)");           //SQL query to insert inputted items into our Table
                     pst.setString(1, menuItem);
                     pst.setString(2, price);
                     pst.setString(3, decription);
@@ -138,7 +138,7 @@ public class Admin
 
  }
 
- else{   //Condition for the case in which "ID" is incorrect/does not exist.
+ else{                     //Condition for the case in which "ID" is incorrect/does not exist.
      txtItem.setText("");
      txtDescription.setText("");
      txtItem.setText("");
@@ -169,7 +169,7 @@ try {
          pst.setString(2, price);
          pst.setString(3, description);
          pst.setString(4, menuId);
-        pst.executeQuery();
+        pst.executeQuery(); //execute the query
 
 
         JOptionPane.showMessageDialog(null,"Item Updated");
@@ -193,15 +193,15 @@ try {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                String menuID = txtId.getText();
+                String menuID = txtId.getText();   //getting the ID in order to delete that particular Item
     try{
 
-        PreparedStatement pst = dbconn.prepareStatement("delete * FROM menuItem where idmenuitem = ?");
+        PreparedStatement pst = dbconn.prepareStatement("delete * FROM menuItem where idmenuitem = ?"); //query to delete Everything given the inputted ID
           pst.setString(1, menuID);
           pst.executeQuery();
         JOptionPane.showMessageDialog(null,"Item Deleted");
 
-        InventoryTable();
+        InventoryTable(); //Show updated table after deleting the item
 
 
         txtItem.setText("");
