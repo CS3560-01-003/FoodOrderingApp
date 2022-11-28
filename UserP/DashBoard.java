@@ -7,9 +7,12 @@ import java.awt.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collection;
 
-import loginP.DBConnection;
+import LoginP.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -62,8 +65,8 @@ public class DashBoard extends JFrame {
 	private JLabel lblNewLabel;
 	private JSpinner spinner;
 	int qty;
-	int orderID;
-	
+	String name;
+	int ID;
 	
 	
 	
@@ -74,7 +77,7 @@ public class DashBoard extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					customerFrame frame = new customerFrame();
+					DashBoard frame = new DashBoard();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -86,7 +89,7 @@ public class DashBoard extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public customerFrame() {
+	public DashBoard() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 665, 328);
 		contentPane = new JPanel();
@@ -104,12 +107,7 @@ public class DashBoard extends JFrame {
 		table_1 = new JTable();
 		table_1.setForeground(Color.BLACK);
 		table_1.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
+			new Object[][] {},
 			new String[] {
 				"Item", "Description", "Price", "Image", "Availability"
 			}
@@ -120,6 +118,29 @@ public class DashBoard extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				qty = (int) spinner.getValue();
+				int row = table_1.getSelectedRow();
+				Object x = table_1.getValueAt(row, 0);
+				name = ((JLabel) x).getText();
+				loadItemID(name, dbconn);
+				
+				try {
+					
+					Statement st = dbconn.createStatement();
+					String query = "INSERT INTO orderItems (itemID, itemQuantity) VALUES ("+ID+", "+qty+")";
+					
+					st.executeUpdate(query);
+					
+					
+					System.out.println(name + " added to database");
+					
+					spinner.setValue(0);
+					
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton.setBounds(10, 229, 173, 23);
@@ -130,7 +151,7 @@ public class DashBoard extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				dispose();
-				cartP.cartFrame cartPaneInstance = new cartP.cartFrame();
+				Cart cartPaneInstance = new Cart();
 				cartPaneInstance.setVisible(true);
 			}
 		});
@@ -142,7 +163,7 @@ public class DashBoard extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				dispose();
-				loginP.Login loginPaneInstance = new loginP.Login();
+				Login loginPaneInstance = new Login();
 				loginPaneInstance.setVisible(true);
 			}
 		});
@@ -157,64 +178,42 @@ public class DashBoard extends JFrame {
 		spinner.setBounds(46, 190, 30, 20);
 		contentPane.add(spinner);
 		
-		loadData(001, dbconn);
-		table_1.setValueAt(itemName, 0, 0);
-		table_1.setValueAt(itemDescription, 0, 1);
-		table_1.setValueAt(price, 0, 2);
-		table_1.setValueAt(imageLabel, 0, 3);
-		table_1.setValueAt(availability, 0, 4);
-		
-		loadData(002, dbconn);
-		table_1.setValueAt(itemName, 1, 0);
-		table_1.setValueAt(itemDescription, 1, 1);
-		table_1.setValueAt(price, 1, 2);
-		table_1.setValueAt(imageLabel, 1, 3);
-		table_1.setValueAt(availability, 1, 4);
-		
-		loadData(003, dbconn);
-		table_1.setValueAt(itemName, 2, 0);
-		table_1.setValueAt(itemDescription, 2, 1);
-		table_1.setValueAt(price, 2, 2);
-		table_1.setValueAt(imageLabel, 2, 3);
-		table_1.setValueAt(availability, 2, 4);
-		
-		loadData(004, dbconn);
-		table_1.setValueAt(itemName, 3, 0);
-		table_1.setValueAt(itemDescription, 3, 1);
-		table_1.setValueAt(price, 3, 2);
-		table_1.setValueAt(imageLabel, 3, 3);
-		table_1.setValueAt(availability, 3, 4);
+		loadData(dbconn);
 		
 		table_1.getColumn("Item").setCellRenderer(new myTableCellRenderer());
 		table_1.getColumn("Description").setCellRenderer(new myTableCellRenderer());
 		table_1.getColumn("Price").setCellRenderer(new myTableCellRenderer());
 		table_1.getColumn("Image").setCellRenderer(new myTableCellRenderer());
 		table_1.getColumn("Availability").setCellRenderer(new myTableCellRenderer());
-		
-		
 	}
 	
 	class myTableCellRenderer implements TableCellRenderer {
+		
+		private Object value;
 		
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			
 			table_1.setRowHeight(90);
 			return (Component) value;
 		}
+		
+		public Object getValue() {
+			return value;
+			
+		}
 	}
 	
-	public void loadData(int itemID, Connection dbconn) {
-		
+	public void loadData(Connection dbconn) {
+	
 		try {
 			
 			
-			String query = "SELECT * FROM menuitems WHERE itemID = ?";
+			String query = "SELECT * FROM menuitems";
 			PreparedStatement st = dbconn.prepareStatement(query);
-			st.setInt(1, itemID);
 			
 			ResultSet rs = st.executeQuery();
 			
-			if (rs.next())
+			while (rs.next())
 			{
 				imageLabel = new JLabel();
 				itemName = new JLabel(rs.getNString("itemName"));
@@ -227,11 +226,9 @@ public class DashBoard extends JFrame {
 				Image myimg = im.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 				ImageIcon newImage = new ImageIcon(myimg);
 				imageLabel.setIcon(newImage);
+				Object[] data = {itemName, itemDescription, price, imageLabel, availability};
+				((DefaultTableModel) table_1.getModel()).addRow(data);
 				
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(this, "No Item Found");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -240,20 +237,22 @@ public class DashBoard extends JFrame {
 		
 	}
 	
-	public void loadOrderID(String itemID, Connection dbconn) {
+	public void loadItemID(String name, Connection dbconn) {
 		
 		try {
 			
 			
-			String query = "SELECT LAST(order_ID) FROM orderItems";
+			String query = "SELECT * FROM menuitems WHERE itemName = ?";
 			PreparedStatement st = dbconn.prepareStatement(query);
+			
+			st.setString(1, name);
 			
 			ResultSet rs = st.executeQuery();
 			
 			if (rs.next())
 			{
 				
-				orderID = rs.getInt("order_ID");
+				ID = rs.getInt("itemID");
 				
 			}
 			else
@@ -264,6 +263,5 @@ public class DashBoard extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 }
