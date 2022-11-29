@@ -2,6 +2,8 @@ package AdminP;
 
 import LoginP.DBConnection;
 
+//import org.apache.commons.dbutils.DbUtils;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -10,8 +12,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+
+import LoginP.Login;
+import net.proteanit.sql.DbUtils;
+
+
 //This is where the restaurant owners will be able to manipulate the Inventory
-public class Admin
+public class Admin extends JFrame
 {
     private JPanel Main;
     private JTextField txtItem;
@@ -25,19 +34,14 @@ public class Admin
     private JTextField txtId;
     private JScrollPane Inventory;
     private JButton logOutbutton;
+    DBConnection conn = new DBConnection();
 
-    public static void main(String[] args)
-    {
-        JFrame frame = new JFrame("AdminP.Admin"); //Creating a frame for Admin
-        frame.setContentPane(new AdminP.Admin().Main);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-
-    }
+    Connection dbconn = conn.connectDB();
 
 
- void InventoryTable() //function to create a table of our inventory
+    //Display
+
+         void InventoryTable()
         {
 
             //  JTable Table= new JTable();
@@ -60,20 +64,35 @@ public class Admin
             }
         }
 
+
     public Admin()
     {
+        setSize(Main.getMaximumSize());
+        add(Main);
+        /**try{
+            JFrame frame = new JFrame("AdminP.Admin"); //Creating a frame for Admin
+
+        frame.setContentPane(new Admin().Main);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }**/
 
 
-        DBConnection conn = new DBConnection(); //making the connection
-        InventoryTable(); //call the table
-        saveButton.addActionListener(new ActionListener() //
+
+        DBConnection conn = new DBConnection();
+   conn.connectDB();
+        InventoryTable();
+        saveButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
 
                 String menuItem,price,decription;
-                                                  //getting the inputted texts
+//getting the inputted texts
                 menuItem = txtItem.getText();
                 price= txtPrice.getText();
                 decription = txtDescription.getText();
@@ -84,13 +103,13 @@ public class Admin
                 try{
 
                     PreparedStatement pst = dbconn.prepareStatement("insert INTO menuItem(item,price,description) " +
-                            "Values(?,?,?)");           //SQL query to insert inputted items into our Table
+                            "Values(?,?,?)"); //SQL query to insert inputted items into our Table
                     pst.setString(1, menuItem);
                     pst.setString(2, price);
                     pst.setString(3, decription);
                     pst.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Menu Item Added!");
-                    // table_load();
+                    InventoryTable();
                     txtItem.setText("");
                     txtPrice.setText("");
                     txtDescription.setText("");
@@ -115,7 +134,7 @@ public class Admin
             public void actionPerformed(ActionEvent e)
             {
 
-                String menuId = txtId.getText();
+                String menuId = txtId.getText(); //For when entering text into search text field
                 Connection dbconn = conn.connectDB();
 
                 try
@@ -124,21 +143,21 @@ public class Admin
                     PreparedStatement pst = dbconn.prepareStatement("SELECT item,price,description FROM menuItem where idmenuitem = ? " );
                     pst.setString(1, menuId);
                     ResultSet rs = pst.executeQuery();
- if(rs.next()== true){
+                    if(rs.next()== true){
 
-     String item = rs.getString(1);
-     String price = rs.getString(2);
-     String  description = rs.getString(3);
+                        String item = rs.getString(1);
+                        String price = rs.getString(2);
+                        String  description = rs.getString(3);
 
-     //Set test fields with these respective
+     //Set text fields with these respective data form query
 
      txtItem.setText(item);
-     txtItem.setText(price);
+     txtPrice.setText(price);
      txtDescription.setText(description);
 
  }
 
- else{                     //Condition for the case in which "ID" is incorrect/does not exist.
+ else{   //Condition for the case in which "ID" is incorrect/does not exist.
      txtItem.setText("");
      txtDescription.setText("");
      txtItem.setText("");
@@ -156,7 +175,7 @@ public class Admin
             @Override
             public void actionPerformed(ActionEvent e)
             {
-  String item, price, description, menuId;
+                String item, price, description, menuId;
                 item = txtItem.getText();
                 price = txtPrice.getText();
                 description = txtDescription.getText();
@@ -164,17 +183,19 @@ public class Admin
 
 try {
                   //given the inputted id number update the item,price and description
-    PreparedStatement pst = dbconn.prepareStatement("update menuItem set item,price,description where idmenuitem = ?");
+    PreparedStatement pst = dbconn.prepareStatement("update menuItem set item = ?,price = ?,description = ? where idmenuitem = ?");
          pst.setString(1, item);
          pst.setString(2, price);
          pst.setString(3, description);
          pst.setString(4, menuId);
-        pst.executeQuery(); //execute the query
+         pst.executeUpdate();
+         pst.close();
 
+    InventoryTable();// Calling this table so it can show the updated table
 
         JOptionPane.showMessageDialog(null,"Item Updated");
 
-          InventoryTable();// Calling this table so it can show the updated table
+
 
             txtItem.setText("");
             txtPrice.setText("");
@@ -184,24 +205,27 @@ try {
             txtId.setText("");
 }catch(SQLException ex){
 
+    System.out.println(ex.getMessage());
 
 }
+
             }
         });
-                      deleteButton.addActionListener(new ActionListener()
+
+        deleteButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                String menuID = txtId.getText();   //getting the ID in order to delete that particular Item
+                String menuID = txtId.getText();
     try{
 
-        PreparedStatement pst = dbconn.prepareStatement("delete * FROM menuItem where idmenuitem = ?"); //query to delete Everything given the inputted ID
+        PreparedStatement pst = dbconn.prepareStatement("delete FROM menuItem where idmenuitem = ?");
           pst.setString(1, menuID);
-          pst.executeQuery();
+          pst.executeUpdate();
         JOptionPane.showMessageDialog(null,"Item Deleted");
 
-        InventoryTable(); //Show updated table after deleting the item
+        InventoryTable();
 
 
         txtItem.setText("");
@@ -217,6 +241,19 @@ e1.printStackTrace();
     }
             }
         });
-
+        logOutbutton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                dispose();
+                Main.setVisible(false);
+                Login newLoginInstance = new Login();
+                // newLoginInstance.setLocationRelativeTo(null);
+                // newLoginInstance.setTitle("Main2");
+                newLoginInstance.goBack();
+            }
+        });
     }
 }
+
