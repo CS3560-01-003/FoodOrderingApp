@@ -3,7 +3,7 @@ CREATE DATABASE foodorderingapp;
 USE foodorderingapp;
 
 Create Table User( 
-    userID INT,
+    userID INT not null auto_increment,
     userName VARCHAR (45) NOT NULL,
     userAddress VARCHAR (45) NOT NULL,
     loginUser VARCHAR (45) NOT NULL,
@@ -25,7 +25,7 @@ Create Table Payment(
     );
     
 Create Table customerOrder(
-	orderID INT,
+	orderID INT not null auto_increment,
     userID INT,
     orderDate DATETIME,
     orderTime DATETIME,
@@ -38,7 +38,7 @@ Create Table customerOrder(
     );
     
     Create Table menuItems(
-	itemID INT,
+	itemID INT not null auto_increment,
     itemName VARCHAR (45),
     itemDescription VARCHAR (45) NOT NULL,
     itemPrice DECIMAL (5,2) NOT NULL,
