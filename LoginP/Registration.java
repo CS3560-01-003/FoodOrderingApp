@@ -136,10 +136,9 @@ public class Registration extends JFrame
                 dispose();
                 register.setVisible(false);
                 Login newLoginInstance = new Login();
-
                // newLoginInstance.setLocationRelativeTo(null);
                // newLoginInstance.setTitle("Main2");
-                newLoginInstance.setVisible(true); //going back Login Window
+                newLoginInstance.goBack(); //going back Login Window
 
 
 
