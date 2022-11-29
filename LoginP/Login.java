@@ -2,6 +2,7 @@ package LoginP;
 
 import AdminP.*;
 
+import java.awt.*;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,10 +21,10 @@ public class Login extends JFrame
     private JRadioButton buyerRadioButton;
     private JRadioButton sellerRadioButton;
     private JButton loginButton;
-    private JButton cancelButton;
     private JPasswordField passwordTextField;
     private JTextField userNameTextField;
     private JButton registerButton;
+    private JLabel message;
 
     DBConnection conn;
     static JFrame frame = new JFrame("Login");
@@ -39,7 +40,6 @@ public class Login extends JFrame
     public Login()
     {
         //initComponents();
-
             loginButton.addActionListener(new ActionListener()
             {
 
@@ -113,8 +113,10 @@ public class Login extends JFrame
 
                         }
                         else {
-                            JOptionPane.showMessageDialog(null,"Invalid username and/ password","",
-                                JOptionPane.ERROR_MESSAGE );
+                            /*JOptionPane.showMessageDialog(null,"Invalid username and/ password","",
+                                JOptionPane.ERROR_MESSAGE );*/
+                            message.setText("Invalid credentials, please try again");
+                            message.setForeground(Color.RED);
 
                         }
                         rs.close();
@@ -142,6 +144,17 @@ public class Login extends JFrame
         });
     }
 
+    public void goBack(){
+        Dimension size = Main2.getMaximumSize();
+        frame.setSize(size);
+        //frame.add(Main2);
+        frame.setVisible(true);
+    }
+
+    private void createUIComponents()
+    {
+        // TODO: place custom component creation code here
+    }
 }
 
 
