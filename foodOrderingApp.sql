@@ -7,7 +7,7 @@ Create Table User(
     userName VARCHAR (45) NOT NULL,
     userAddress VARCHAR (45) NOT NULL,
     loginUser VARCHAR (45) NOT NULL,
-    userEmail INT (45) NOT NULL,
+    userEmail VARCHAR (45) NOT NULL,
     loginPassword VARCHAR (45) NOT NULL,
     accessType VARCHAR (45) NOT NULL,
     PRIMARY KEY (userID)
