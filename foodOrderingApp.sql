@@ -43,7 +43,7 @@ Create Table customerOrder(
     itemDescription VARCHAR (45) NOT NULL,
     itemPrice DECIMAL (5,2) NOT NULL,
     itemImage LONGBLOB,
-    itemAvailability VARCHAR (45) NOT NULL,
+    itemAvailability VARCHAR (45) DEFAULT 'in stock',
     PRIMARY KEY (itemID)
     );
     
@@ -54,10 +54,10 @@ Create Table orderItems(
     PRIMARY KEY (itemID)
     );
     
-INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('001', 'Classic Cheeseburge', 'juicy', '11.99', 'F:\foodOrderingApp\burger.jpg', 'in stock');
-INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('002', 'Boneless Chicken Wings', 'saucy', '16.99', 'F:\foodOrderingApp\wings.jpg', 'in stock');
+INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('001', 'Cheeseburger', 'juicy', '11.99', 'F:\foodOrderingApp\burger.jpg', 'in stock');
+INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('002', 'Boneless Wings', 'saucy', '16.99', 'F:\foodOrderingApp\wings.jpg', 'in stock');
 INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('003', 'Pecan Pie Slice', 'sweet', '3.99', 'F:\foodOrderingApp\pie.jpg', 'out of stock');
-INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('004', 'Class Jenny’s Breakfast', 'yum', '11.99', 'F:\foodOrderingApp\breakfastcustomerorder.jpg', 'in stock');
+INSERT INTO `foodorderingapp`.`menuitems` (`itemID`, `itemName`, `itemDescription`, `itemPrice`, `itemImage`, `itemAvailability`) VALUES ('004', 'Jenny’s Breakfast', 'yum', '11.99', 'F:\foodOrderingApp\breakfastcustomerorder.jpg', 'in stock');
 
 INSERT INTO `foodorderingapp`.`user` (`userID`, `userName`, `userAddress`, `loginUser`, `userEmail`, `loginPassword`, `accessType`) VALUES ('1', 'Priscilla Ballesteros', '3801 W Temple Ave, Pomona, CA 91768', 'Priscilla1', 'priscilla@gmail.com', 'p123', '1');
 INSERT INTO `foodorderingapp`.`user` (`userID`, `userName`, `userAddress`, `loginUser`, `userEmail`, `loginPassword`, `accessType`) VALUES ('2', 'Anushka Venkatesh', '3802 W Temple Ave, Pomona, CA 91768', 'Anushka2', 'anushka@gmail.com', 'a123', '1');
