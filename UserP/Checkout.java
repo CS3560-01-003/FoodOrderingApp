@@ -259,7 +259,6 @@ public class Checkout extends JFrame {
 							st2.setString(4, cardNumber);
 							st2.setString(5, orderType);
 							st2.executeUpdate();
-							JOptionPane.showMessageDialog(null, "Order placed");
 						} else
 						{
 							String query = "INSERT INTO payment (userID, customerName, cardType, cardNumber, cardExp, cardSecure) VALUES (?,?, ?, ?, ?, ?)";
