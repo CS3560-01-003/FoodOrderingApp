@@ -234,7 +234,6 @@ public class Checkout extends JFrame {
 				if (name.isEmpty()||  //condition for if user doesn't fill out all the fields
 						cardNumber.isEmpty() ||
 						cardType.isEmpty() ||
-						address.isEmpty() ||
 						cvvTxt.getText().isEmpty()||
 						expDateTxt.getText().isEmpty())
 				{
