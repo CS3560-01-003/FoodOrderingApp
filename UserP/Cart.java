@@ -19,11 +19,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import LoginP.DBConnection;
+import net.proteanit.sql.DbUtils;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Cart extends JFrame {
+public class Cart extends JFrame
+{
 
 	private JPanel contentPane;
 	private JTable table_1;
@@ -31,20 +37,30 @@ public class Cart extends JFrame {
 	private double price;
 	private int qty;
 	private int ID;
-	private double total = 0;
+	private double total;
 	private JLabel lblNewLabel_1;
-	
+
+	DBConnection conn = new DBConnection();
+	Connection dbconn = conn.connectDB();
+
+	private static final DecimalFormat df = new DecimalFormat("0.00");
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+	public static void main(String[] args)
+	{
+		EventQueue.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
 					Cart frame = new Cart();
 					frame.setVisible(true);
-				} catch (Exception e) {
+				}
+				catch (Exception e)
+				{
 					e.printStackTrace();
 				}
 			}
@@ -54,50 +70,44 @@ public class Cart extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Cart() {
+	public Cart()
+	{
+		this.setTitle("Cart");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 584, 318);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		DBConnection conn = new DBConnection();
-		Connection dbconn = conn.connectDB();
+
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 11, 547, 153);
 		contentPane.add(scrollPane);
-		
+
 		table_1 = new JTable();
 		table_1.setForeground(Color.BLACK);
-		table_1.setModel(new DefaultTableModel(
-			new Object[][] {},
-			new String[] {
-				"Item", "Quantity", "Price"
-			}
-		));
+
 		scrollPane.setViewportView(table_1);
-		
-		loadTable(dbconn);
-		
-		for (int i = 0; i < table_1.getRowCount(); i++)
-		{
-			total = total + ((double)table_1.getValueAt(i, 2));
-		}
-		
+
+
 		JLabel lblNewLabel = new JLabel("Total:");
 		lblNewLabel.setBounds(299, 222, 46, 14);
 		contentPane.add(lblNewLabel);
-		
-		lblNewLabel_1 = new JLabel(Double.toString(total));
-		lblNewLabel_1.setBounds(355, 222, 46, 14);
+
+		lblNewLabel_1 = new JLabel();
+		lblNewLabel_1.setBounds(355, 222, 50, 14);
 		contentPane.add(lblNewLabel_1);
-		
+
+		loadTable(dbconn);
+
 		JButton btnNewButton = new JButton("Checkout");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+		btnNewButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+
 				dispose();
 				Checkout checkoutInstance = new Checkout();
 				checkoutInstance.setVisible(true);
@@ -105,48 +115,57 @@ public class Cart extends JFrame {
 		});
 		btnNewButton.setBounds(409, 245, 148, 23);
 		contentPane.add(btnNewButton);
-		
+
 		JButton btnNewButton_1 = new JButton("Remove Item");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+		btnNewButton_1.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+
 				int row = table_1.getSelectedRow();
 				Object x = table_1.getValueAt(row, 0);
-				String name = ((JLabel) x).getText();
-				
+				String name = x.toString();
+				System.out.println(name);
+
 				try
 				{
-					String query = "SELECT * FROM menuitems WHERE itemName = ?";
+					String query = "SELECT * FROM menuItems WHERE itemName = ?";
 					PreparedStatement st = dbconn.prepareStatement(query);
-					
+
 					st.setString(1, name);
-					
+
 					ResultSet rs = st.executeQuery();
 					if (rs.next())
 					{
-						
-						qty = rs.getInt("itemQuantity");
-						//"update orderItems set itemQuantity = itemQuantity - 1 where yourColumnName > 0"
-						
-					}
-					else
+						int menuID = rs.getInt("itemID");
+						System.out.println(menuID);
+						PreparedStatement pst = dbconn.prepareStatement("delete FROM orderItems where itemID = ?");
+						pst.setInt(1, menuID);
+						pst.executeUpdate();
+						loadTable(dbconn);
+						JOptionPane.showMessageDialog(null, "Item Deleted");
+						pst.close();
+
+					} else
 					{
-						//JOptionPane.showMessageDialog(this, "No Item Found");
+						JOptionPane.showMessageDialog(contentPane, "No Item Found");
 					}
 				}
 				catch (SQLException e1)
 				{
-					
+
 				}
 			}
 		});
 		btnNewButton_1.setBounds(409, 175, 149, 23);
 		contentPane.add(btnNewButton_1);
-		
+
 		JButton btnNewButton_2 = new JButton("Continue Shopping");
-		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+		btnNewButton_2.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+
 				dispose();
 				DashBoard dashboardInstance = new DashBoard();
 				dashboardInstance.setVisible(true);
@@ -154,33 +173,32 @@ public class Cart extends JFrame {
 		});
 		btnNewButton_2.setBounds(409, 209, 148, 23);
 		contentPane.add(btnNewButton_2);
-		
-		
-		System.out.println(total + " added to database");
-		
-		
-		
 	}
-	
-	public void loadTable(Connection dbconn) {
-		
-		try {
-			
-			
+
+	public void loadTable(Connection dbconn)
+	{
+		table_1.setModel(new DefaultTableModel(
+				new Object[][]{},
+				new String[]{
+						"Item", "Quantity", "Price"
+				}
+		));
+		try
+		{
 			String query = "SELECT * FROM orderItems";
 			PreparedStatement st = dbconn.prepareStatement(query);
-			
+
 			ResultSet rs = st.executeQuery();
-			
+
 			while (rs.next())
 			{
 				ID = rs.getInt("itemID");
 				qty = rs.getInt("itemQuantity");
-				
-				
-				query = "SELECT * FROM menuItems WHERE itemID = "+ID+"";
+
+
+				query = "SELECT * FROM menuItems WHERE itemID = " + ID + "";
 				PreparedStatement sta = dbconn.prepareStatement(query);
-				
+
 				ResultSet rse = sta.executeQuery();
 				if (rse.next())
 				{
@@ -189,12 +207,33 @@ public class Cart extends JFrame {
 				}
 				Object[] data = {itemName, qty, price};
 				((DefaultTableModel) table_1.getModel()).addRow(data);
-				
+				if (table_1.getRowCount() == 0 && table_1.getColumnCount() == 1)
+				{
+					total = 0;
+				}
+				else
+				{
+					total = getTotal();
+					lblNewLabel_1.setText(df.format(total));
+					System.out.print(total);
+				}
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
+	}
+
+	public double getTotal()
+	{
+		total = 0;
+		for (int i = 0; i < table_1.getRowCount(); i++)
+		{
+			total = total + ((double) table_1.getValueAt(i, 2));
+		}
+		return total;
 	}
 }
