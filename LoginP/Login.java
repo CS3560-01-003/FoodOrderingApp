@@ -1,14 +1,12 @@
 package LoginP;
 
 import AdminP.*;
-
+import UserP.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import LoginP.DBConnection;
-import UserP.DashBoard;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -34,19 +32,21 @@ public class Login extends JFrame
         frame.setContentPane(new Login().Main2);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setBounds(100, 100, 750, 328);
         frame.setVisible(true);
     }
 
     public Login()
     {
         //initComponents();
+        DBConnection conn = new DBConnection(); // connecting to database
             loginButton.addActionListener(new ActionListener()
             {
 
                 @Override
                 public void actionPerformed(ActionEvent e)
                 {
-                    DBConnection conn = new DBConnection(); // connecting ot database
+
                     System.out.println("connected"); //connection test*/
 
                     //get the inputted information from the text fields
@@ -54,13 +54,15 @@ public class Login extends JFrame
                     String password = passwordTextField.getText();
                     boolean is_buyer = buyerRadioButton.isSelected();
                     boolean is_seller = sellerRadioButton.isSelected();
+                    System.out.println(user_name);
+                    System.out.println(password);
 
                     try
                     {
-                        int accessType = 1;
-                        if(is_seller) { accessType = 2; }
-                        Connection dbconn = conn.connectDB();                                 //AND accesstype = ?
-                        String query = "SELECT * FROM users WHERE username = ?  AND password = ?  AND accesstype = ? ";
+                        String accessType = "1";
+                        if(is_seller) { accessType = "2"; }
+                        Connection dbconn = conn.connectDB();
+                        String query = "SELECT * FROM user WHERE loginUser = ?  AND loginPassword = ?  AND accessType = ? ";
                         PreparedStatement pst = dbconn.prepareStatement(query);
                        // Statement pst = dbconn.createStatement(query);
 
@@ -69,14 +71,14 @@ public class Login extends JFrame
                         pst.setString(1, user_name);
                         pst.setString(2, password);
                      //  pst.setInt(3,accessType);
-                        pst.setInt(3, accessType);
+                        pst.setString(3, accessType);
 
                         ResultSet rs = pst.executeQuery();
 
                         if(rs.next()){
                             dispose();
                             frame.setVisible(false);
-                            if (accessType == 1)
+                            if (accessType == "1")
                             {
 
                                 // cross checking incoming date with the db users data - is admin in db
@@ -101,7 +103,7 @@ public class Login extends JFrame
                                 // Render the dashboard that belongs to user view
                                 // display data for the user
                                 Admin adminPanelInstance = new Admin();
-                                adminPanelInstance.setTitle("Dashboard");
+                                adminPanelInstance.setTitle("DashBoard");
                                 adminPanelInstance.setVisible(true);
 
 
@@ -117,6 +119,7 @@ public class Login extends JFrame
                                 JOptionPane.ERROR_MESSAGE );*/
                             message.setText("Invalid credentials, please try again");
                             message.setForeground(Color.RED);
+                            //frame.pack();
 
                         }
                         rs.close();
@@ -156,6 +159,3 @@ public class Login extends JFrame
         // TODO: place custom component creation code here
     }
 }
-
-
-
