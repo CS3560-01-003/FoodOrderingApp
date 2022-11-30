@@ -251,10 +251,9 @@ public class DashBoard extends JFrame {
                 imageLabel.setIcon(newImage);
                 Object[] data = {itemName, itemDescription, price, imageLabel, availability};
                 ((DefaultTableModel) table_1.getModel()).addRow(data);
-                st.close();
-                rs.close();
-
             }
+            st.close();
+            rs.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
