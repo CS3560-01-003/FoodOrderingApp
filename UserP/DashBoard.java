@@ -196,7 +196,8 @@ public class DashBoard extends JFrame {
         lblNewLabel = new JLabel("QTY:");
         lblNewLabel.setBounds(19, 190, 46, 14);
         contentPane.add(lblNewLabel);
-
+        
+        SpinnerModel model = new SpinnerNumberModel(0,0,100,1);
         spinner = new JSpinner();
         spinner.setBounds(55, 190, 40, 20);
         contentPane.add(spinner);
