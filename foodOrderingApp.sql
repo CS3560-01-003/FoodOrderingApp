@@ -27,7 +27,6 @@ Create Table Payment(
 Create Table customerOrder(
 	orderID INT not null auto_increment,
     userID INT,
-    orderDate DATETIME,
     orderTime DATETIME,
     numOfProducts INT NOT NULL,
     cardNumber BIGINT NOT NULL,
