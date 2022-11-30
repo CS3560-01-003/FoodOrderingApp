@@ -13,9 +13,8 @@ import java.util.logging.Logger;
 
 public class Registration extends JFrame
 {
-    private JTextField firstNametxt;
-    private JTextField middleNametxt;
-    private JTextField lastNametxt;
+    private JTextField nametxt;
+    private JTextField emailtxt;
     private JTextField address;
     private JTextField username;
     private JRadioButton buyerRadioButton;
@@ -44,20 +43,19 @@ public class Registration extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                String firstName,middleName,lastName,address, user_name, password;
+                String name,email,address, user_name, password;
 
                 boolean is_buyer = buyerRadioButton.isSelected();    //initialize
                 boolean is_seller = sellerRadioButton.isSelected();
 
-                firstName = firstNametxt.getText();
-                middleName = middleNametxt.getText();
-                lastName= lastNametxt.getText();
+                name = nametxt.getText();
+                email = emailtxt.getText();
                 address = addresstxt.getText();
                 user_name = usernametxt.getText();
                 password = passwordtxt.getText();
 
-                if(firstName.isEmpty() ||  //condition for if user doesn't fill out all the fields
-                        lastName.isEmpty() ||
+                if(name.isEmpty() ||  //condition for if user doesn't fill out all the fields
+                        email.isEmpty() ||
                         address.isEmpty() ||
                         user_name.isEmpty() ||
                         password.isEmpty()) {
@@ -68,7 +66,7 @@ public class Registration extends JFrame
 
                     try
                     {
-                        PreparedStatement st = dbconn.prepareStatement("SELECT * FROM users WHERE username = ?");
+                        PreparedStatement st = dbconn.prepareStatement("SELECT * FROM user WHERE userName = ?");
 
                         st.setString(1, user_name);
 
@@ -80,14 +78,13 @@ public class Registration extends JFrame
                             JOptionPane.showMessageDialog(null, "Username is already in use. Please choose another.", "Error", JOptionPane.ERROR_MESSAGE);
                         } else
                         {                        //if username is unique then insert the data into users table.
-                            PreparedStatement st2 = dbconn.prepareStatement("INSERT INTO users (firstname, middlename, lastname, address, username, password, accesstype) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                            PreparedStatement st2 = dbconn.prepareStatement("INSERT INTO user (userName,userAddress, loginUser, userEmail, loginPassword, accessType) VALUES (?, ?, ?, ?, ?, ?)");
 
-                            st2.setString(1, firstName);
-                            st2.setString(2, middleName);
-                            st2.setString(3, lastName);
-                            st2.setString(4, address);
-                            st2.setString(5, user_name);
-                            st2.setString(6, password);
+                            st2.setString(1, name);
+                            st2.setString(2, address);
+                            st2.setString(3, user_name);
+                            st2.setString(4, email);
+                            st2.setString(5, password);
 
                             int accessType = 1;
                             if (is_seller)
@@ -95,7 +92,7 @@ public class Registration extends JFrame
                                 accessType = 2;
                             }
 
-                            st2.setInt(7, accessType);
+                            st2.setInt(6, accessType);
 
                              //st2.executeQuery();
 
@@ -104,9 +101,8 @@ public class Registration extends JFrame
 
                             JOptionPane.showMessageDialog(null, "User account created.", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
 
-                            firstNametxt.setText(null);
-                            middleNametxt.setText(null);
-                            lastNametxt.setText(null);
+                            nametxt.setText(null);
+                            emailtxt.setText(null);
                             addresstxt.setText(null);
                             usernametxt.setText(null);
                             passwordtxt.setText(null);
