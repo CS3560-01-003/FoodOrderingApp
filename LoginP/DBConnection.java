@@ -8,7 +8,7 @@ public class DBConnection
     public DBConnection() {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
-            myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/RestaurantDB", "root", "Durata@1011");
+            myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/foodorderingapp", "root", "Jiso1022");
         }
         catch(Exception e){
             System.out.println("Failed to get connection");
