@@ -17,7 +17,7 @@ Create Table Payment(
     userID INT (6), 
     customerName VARCHAR (45),
     cardType VARCHAR (45) NOT NULL,
-    cardNumber BIGINT NOT NULL,
+    cardNumber VARCHAR(45) NOT NULL,
     cardExp INT NOT NULL,
     cardSecure INT NOT NULL, 
     FOREIGN KEY (userID) REFERENCES User(userID),
@@ -27,11 +27,12 @@ Create Table Payment(
 Create Table customerOrder(
 	orderID INT not null auto_increment,
     userID INT,
+    orderDate DATETIME,
     orderTime DATETIME,
     numOfProducts INT NOT NULL,
-    cardNumber BIGINT NOT NULL,
-    orderType VARCHAR (45),
-    orderStatus VARCHAR (45) DEFAULT 'pending',
+    cardNumber VARCHAR (45) NOT NULL,
+    orderType VARCHAR (45) NOT NULL,
+    orderStatus VARCHAR (45) NOT NULL DEFAULT 'pending',
     FOREIGN KEY (cardNumber) REFERENCES Payment(cardNumber),
     PRIMARY KEY (orderID)
     );
