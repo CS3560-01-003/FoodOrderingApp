@@ -31,7 +31,7 @@ Create Table customerOrder(
     numOfProducts INT NOT NULL,
     cardNumber BIGINT NOT NULL,
     orderType VARCHAR (45),
-    orderStatus VARCHAR (45),
+    orderStatus VARCHAR (45) DEFAULT 'pending',
     FOREIGN KEY (cardNumber) REFERENCES Payment(cardNumber),
     PRIMARY KEY (orderID)
     );
