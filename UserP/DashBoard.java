@@ -54,7 +54,7 @@ public class DashBoard extends JFrame {
     DBConnection conn;
 
     JLabel imageLabel;
-    JLabel itemName;
+    String itemName;
     JLabel itemDescription;
     JLabel price;
     JLabel availability;
@@ -129,7 +129,7 @@ public class DashBoard extends JFrame {
                 else
                 {
                     Object x = table_1.getValueAt(row, 0);
-                    name = ((JLabel) x).getText();
+                    name = x.toString();
                     loadItemID(name, dbconn);
 
                     try
@@ -202,8 +202,7 @@ public class DashBoard extends JFrame {
         contentPane.add(spinner);
 
         loadData(dbconn);
-
-        table_1.getColumn("Item").setCellRenderer(new myTableCellRenderer());
+        
         table_1.getColumn("Description").setCellRenderer(new myTableCellRenderer());
         table_1.getColumn("Price").setCellRenderer(new myTableCellRenderer());
         table_1.getColumn("Image").setCellRenderer(new myTableCellRenderer());
@@ -239,7 +238,7 @@ public class DashBoard extends JFrame {
             while (rs.next())
             {
                 imageLabel = new JLabel();
-                itemName = new JLabel(rs.getNString("itemName"));
+                itemName = rs.getNString("itemName");
                 itemDescription = new JLabel(rs.getNString("itemDescription"));
                 price = new JLabel(rs.getString("itemPrice"));
                 availability = new JLabel(rs.getNString("itemAvailability"));
