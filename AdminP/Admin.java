@@ -1,11 +1,12 @@
 package AdminP;
 
-import LoginP.DBConnection;
+import LoginP.*;
 
 //import org.apache.commons.dbutils.DbUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -14,8 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import LoginP.Login;
+import UserP.DashBoard;
 import net.proteanit.sql.DbUtils;
 
 
@@ -48,7 +51,7 @@ public class Admin extends JFrame
             try
             {
 
-                PreparedStatement pst = dbconn.prepareStatement("SELECT * FROM menuitem");
+                PreparedStatement pst = dbconn.prepareStatement("SELECT * FROM menuItems");
 
                 ResultSet res = pst.executeQuery();
 
@@ -67,7 +70,7 @@ public class Admin extends JFrame
 
     public Admin()
     {
-        setSize(Main.getMaximumSize());
+        setSize(750, 328);
         add(Main);
         /**try{
             JFrame frame = new JFrame("AdminP.Admin"); //Creating a frame for Admin
@@ -83,7 +86,7 @@ public class Admin extends JFrame
 
 
         DBConnection conn = new DBConnection();
-   conn.connectDB();
+        conn.connectDB();
         InventoryTable();
         saveButton.addActionListener(new ActionListener()
         {
@@ -91,10 +94,11 @@ public class Admin extends JFrame
             public void actionPerformed(ActionEvent e)
             {
 
-                String menuItem,price,decription;
+                String menuItem,decription;
+                Double price;
 //getting the inputted texts
                 menuItem = txtItem.getText();
-                price= txtPrice.getText();
+                price = Double.valueOf(txtPrice.getText());
                 decription = txtDescription.getText();
                 // ConnectDB();
                 //Connecting to our database
@@ -102,10 +106,10 @@ public class Admin extends JFrame
                 System.out.println("connected"); //connection test
                 try{
 
-                    PreparedStatement pst = dbconn.prepareStatement("insert INTO menuItem(item,price,description) " +
+                    PreparedStatement pst = dbconn.prepareStatement("insert INTO menuItems(itemName,itemPrice,itemDescription) " +
                             "Values(?,?,?)"); //SQL query to insert inputted items into our Table
                     pst.setString(1, menuItem);
-                    pst.setString(2, price);
+                    pst.setDouble(2, price);
                     pst.setString(3, decription);
                     pst.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Menu Item Added!");
@@ -140,19 +144,19 @@ public class Admin extends JFrame
                 try
                 {
 
-                    PreparedStatement pst = dbconn.prepareStatement("SELECT item,price,description FROM menuItem where idmenuitem = ? " );
+                    PreparedStatement pst = dbconn.prepareStatement("SELECT itemName,itemPrice,ItemDescription FROM menuItems where itemID = ? " );
                     pst.setString(1, menuId);
                     ResultSet rs = pst.executeQuery();
                     if(rs.next()== true){
 
                         String item = rs.getString(1);
-                        String price = rs.getString(2);
+                        Double price = rs.getDouble(2);
                         String  description = rs.getString(3);
 
      //Set text fields with these respective data form query
 
      txtItem.setText(item);
-     txtPrice.setText(price);
+     txtPrice.setText(price.toString());
      txtDescription.setText(description);
 
  }
@@ -183,7 +187,7 @@ public class Admin extends JFrame
 
 try {
                   //given the inputted id number update the item,price and description
-    PreparedStatement pst = dbconn.prepareStatement("update menuItem set item = ?,price = ?,description = ? where idmenuitem = ?");
+    PreparedStatement pst = dbconn.prepareStatement("update menuItems set itemName = ?,itemPrice = ?,itemDescription = ? where itemID = ?");
          pst.setString(1, item);
          pst.setString(2, price);
          pst.setString(3, description);
@@ -220,7 +224,7 @@ try {
                 String menuID = txtId.getText();
     try{
 
-        PreparedStatement pst = dbconn.prepareStatement("delete FROM menuItem where idmenuitem = ?");
+        PreparedStatement pst = dbconn.prepareStatement("delete FROM menuItems where itemID = ?");
           pst.setString(1, menuID);
           pst.executeUpdate();
         JOptionPane.showMessageDialog(null,"Item Deleted");
@@ -255,5 +259,5 @@ e1.printStackTrace();
             }
         });
     }
-}
 
+}
