@@ -1,364 +1,294 @@
 package UserP;
 
-import LoginP.DBConnection;
+import javax.swing.*;
 
 import java.awt.EventQueue;
+import java.awt.Image;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collection;
 
-import javax.swing.*;
+import LoginP.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import javax.swing.border.EtchedBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.awt.Color;
+import java.awt.Component;
+
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import java.math.BigInteger;
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.JScrollBar;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.List;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+import javax.swing.AbstractListModel;
+import javax.swing.BorderFactory;
 
-public class Checkout extends JFrame {
 
-	private JPanel contentPane;
-	private JTextField cardNumberTxt;
-	private String[] cardTypeStrings = { "Debit", "Credit"};
-	private JTextField expDateTxt;
-	private JTextField cvvTxt;
-	private JTextField addressTxtField;
-	private JTextField nameTxt;
-	int ID;
-	String name, cardNumber, cardType, address, orderType;
-	Integer expDate, cvv;
-	int numOfProducts;
-	DBConnection conn = new DBConnection();
-	Connection dbconn = conn.connectDB();
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	private LocalDateTime dateTime;
+public class DashBoard extends JFrame {
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Checkout frame = new Checkout();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the frame.
-	 */
-	public Checkout() {
-		this.setTitle("Checkout");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 329);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    private JPanel contentPane;
+
+    DBConnection conn;
+
+    JLabel imageLabel;
+    JLabel itemName;
+    JLabel itemDescription;
+    JLabel price;
+    JLabel availability;
+    private JButton btnNewButton;
+    private JTable table_1;
+    private JButton btnViewCart;
+    private JButton btnLogout;
+    private JLabel lblNewLabel;
+    private JSpinner spinner;
+    int qty;
+    String name;
+    int ID;
 
 
 
-		setContentPane(contentPane);
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		contentPane.setLayout(gbl_contentPane);
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    DashBoard frame = new DashBoard();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-		JToggleButton pickupToggle = new JToggleButton("Pickup");
-		pickupToggle.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+    /**
+     * Create the frame.
+     */
+    public DashBoard() {
+        this.setTitle("Menu");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 750, 328);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        DBConnection conn = new DBConnection();
+        Connection dbconn = conn.connectDB();
 
-				int state = e.getStateChange();
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
 
-				if (state == ItemEvent.SELECTED)
-				{
-					addressTxtField.setEnabled(false);
-					orderType = "Pick up";
-				}
-				else
-				{
-					addressTxtField.setEnabled(true);
-					orderType = "Delivery";
-				}
-			}
-		});
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(9, 11, 725, 168);
+        contentPane.add(scrollPane);
 
-		GridBagConstraints gbc_pickupToggle = new GridBagConstraints();
-		gbc_pickupToggle.gridwidth = 2;
-		gbc_pickupToggle.insets = new Insets(0, 0, 5, 0);
-		gbc_pickupToggle.gridx = 0;
-		gbc_pickupToggle.gridy = 0;
-		contentPane.add(pickupToggle, gbc_pickupToggle);
+        table_1 = new JTable();
+        table_1.setForeground(Color.BLACK);
+        table_1.setModel(new DefaultTableModel(
+                new Object[][] {},
+                new String[] {
+                        "Item", "Description", "Price", "Image", "Availability"
+                }
+        ));
+        scrollPane.setViewportView(table_1);
 
-		JButton btnNewButton_1 = new JButton("Back To Cart");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+        btnNewButton = new JButton("Add Item To Cart");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
 
-				dispose();
-				Cart cartPaneInstance = new Cart();
-				cartPaneInstance.setVisible(true);
-			}
-		});
+                qty = (int) spinner.getValue();
+                int row = table_1.getSelectedRow();
+                if (qty == 0 || row == -1)
+                {
+                    JOptionPane.showMessageDialog(null, "Please fill all information", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    Object x = table_1.getValueAt(row, 0);
+                    name = ((JLabel) x).getText();
+                    loadItemID(name, dbconn);
 
-		JLabel lblNewLabel_5 = new JLabel("Name");
-		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_5.gridx = 0;
-		gbc_lblNewLabel_5.gridy = 2;
-		contentPane.add(lblNewLabel_5, gbc_lblNewLabel_5);
+                    try
+                    {
+                        PreparedStatement st = dbconn.prepareStatement("SELECT * FROM orderItems WHERE itemID = ?");
 
-		nameTxt = new JTextField();
-		GridBagConstraints gbc_nameTxt = new GridBagConstraints();
-		gbc_nameTxt.insets = new Insets(0, 0, 5, 0);
-		gbc_nameTxt.fill = GridBagConstraints.HORIZONTAL;
-		gbc_nameTxt.gridx = 1;
-		gbc_nameTxt.gridy = 2;
-		contentPane.add(nameTxt, gbc_nameTxt);
-		nameTxt.setColumns(10);
+                        st.setInt(1, ID);
 
-		JLabel lblNewLabel = new JLabel("Card Number");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.anchor = GridBagConstraints.LINE_START;
-		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 3;
-		contentPane.add(lblNewLabel, gbc_lblNewLabel);
+                        ResultSet res = st.executeQuery(); //Making sure user chooses a unique username by excuting the above
+                        // query of selecting a username and if it exits prompt user to choose another
 
-		cardNumberTxt = new JTextField();
-		GridBagConstraints gbc_cardNumberTxt = new GridBagConstraints();
-		gbc_cardNumberTxt.insets = new Insets(0, 0, 5, 0);
-		gbc_cardNumberTxt.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cardNumberTxt.gridx = 1;
-		gbc_cardNumberTxt.gridy = 3;
-		contentPane.add(cardNumberTxt, gbc_cardNumberTxt);
-		cardNumberTxt.setColumns(10);
-
-		JLabel lblNewLabel_1 = new JLabel("Expiration Date");
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_1.gridx = 0;
-		gbc_lblNewLabel_1.gridy = 4;
-		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
-
-		expDateTxt = new JTextField();
-		GridBagConstraints gbc_expDateTxt = new GridBagConstraints();
-		gbc_expDateTxt.insets = new Insets(0, 0, 5, 0);
-		gbc_expDateTxt.fill = GridBagConstraints.HORIZONTAL;
-		gbc_expDateTxt.gridx = 1;
-		gbc_expDateTxt.gridy = 4;
-		contentPane.add(expDateTxt, gbc_expDateTxt);
-		expDateTxt.setColumns(10);
-
-		JLabel lblNewLabel_2 = new JLabel("CVV");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_2.gridx = 0;
-		gbc_lblNewLabel_2.gridy = 6;
-		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
-
-		cvvTxt = new JTextField();
-		GridBagConstraints gbc_cvvTxt = new GridBagConstraints();
-		gbc_cvvTxt.insets = new Insets(0, 0, 5, 0);
-		gbc_cvvTxt.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cvvTxt.gridx = 1;
-		gbc_cvvTxt.gridy = 6;
-		contentPane.add(cvvTxt, gbc_cvvTxt);
-		cvvTxt.setColumns(10);
-
-		JLabel lblNewLabel_3 = new JLabel("Card Type");
-		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3.gridx = 0;
-		gbc_lblNewLabel_3.gridy = 7;
-		contentPane.add(lblNewLabel_3, gbc_lblNewLabel_3);
-
-		JComboBox<Object> comboBox = new JComboBox<Object>(cardTypeStrings);
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridx = 1;
-		gbc_comboBox.gridy = 7;
-		contentPane.add(comboBox, gbc_comboBox);
-
-		JLabel lblNewLabel_4 = new JLabel("Address");
-		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-		gbc_lblNewLabel_4.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_4.gridx = 0;
-		gbc_lblNewLabel_4.gridy = 8;
-		contentPane.add(lblNewLabel_4, gbc_lblNewLabel_4);
-
-		addressTxtField = new JTextField();
-		GridBagConstraints gbc_addressTxtField = new GridBagConstraints();
-		gbc_addressTxtField.insets = new Insets(0, 0, 5, 0);
-		gbc_addressTxtField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_addressTxtField.gridx = 1;
-		gbc_addressTxtField.gridy = 8;
-		contentPane.add(addressTxtField, gbc_addressTxtField);
-		addressTxtField.setColumns(10);
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 10;
-		contentPane.add(btnNewButton_1, gbc_btnNewButton_1);
-
-		JButton btnNewButton = new JButton("Place Order");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
+                        if (res.next())
+                        {
+                            st = dbconn.prepareStatement("UPDATE orderItems set itemQuantity = itemQuantity + " + qty + " WHERE itemID = " + ID + "");
+                            st.executeUpdate();
+                        } else
+                        {
+                            Statement sta = dbconn.createStatement();
+                            String query = "INSERT INTO orderItems (itemID, itemQuantity) VALUES (" + ID + ", " + qty + ")";
+                            sta.executeUpdate(query);
+                        }
+                        JOptionPane.showMessageDialog(null, "Item Added");
+                        spinner.setValue(0);
+                        res.close();
+                        st.close();
 
 
-				dateTime = LocalDateTime.now();
-				expDate = Integer.parseInt(expDateTxt.getText());
-				cvv = Integer.parseInt(cvvTxt.getText());
-				name = nameTxt.getText();
-				cardNumber = cardNumberTxt.getText();
-				cardType = comboBox.getSelectedItem().toString();
-				address = addressTxtField.getText();
-				loadUserID(name, dbconn);
-				loadQty(dbconn);
+                    }
+                    catch (SQLException e1)
+                    {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+        btnNewButton.setBounds(10, 229, 173, 23);
+        contentPane.add(btnNewButton);
 
-				if (name.isEmpty()||  //condition for if user doesn't fill out all the fields
-						cardNumber.isEmpty() ||
-						address.isEmpty() ||
-						cardType.isEmpty() ||
-						address.isEmpty() ||
-						cvvTxt.getText().isEmpty()||
-						expDateTxt.getText().isEmpty())
-				{
-					JOptionPane.showMessageDialog(null, "Please fill all information", "Error", JOptionPane.ERROR_MESSAGE);
-				} else
-				{
-					try
-					{
+        btnViewCart = new JButton("View Cart");
+        btnViewCart.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
-						PreparedStatement st = dbconn.prepareStatement("SELECT * FROM payment WHERE cardNumber = ?");
+                dispose();
+                Cart cartPaneInstance = new Cart();
+                cartPaneInstance.setVisible(true);
+            }
+        });
+        btnViewCart.setBounds(228, 229, 173, 23);
+        contentPane.add(btnViewCart);
 
-						st.setString(1, cardNumber);
+        btnLogout = new JButton("Logout");
+        btnLogout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
-						ResultSet res = st.executeQuery(); //Making sure user is a customer in the database
+                dispose();
+                Login loginPaneInstance = new Login();
+                loginPaneInstance.goBack();
+            }
+        });
+        btnLogout.setBounds(446, 229, 173, 23);
+        contentPane.add(btnLogout);
 
-						if (res.next())
-						{
-							String query = "INSERT INTO customerOrder (userID, orderTime, numOfProducts, cardNumber, orderType) VALUES (?,?, ?, ?, ?)";
-							PreparedStatement st2 = dbconn.prepareStatement(query);
-							st2.setInt(1, ID);
-							st2.setString(2, dateTime.toString());
-							st2.setInt(3, numOfProducts);
-							st2.setString(4, cardNumber);
-							st2.setString(5, orderType);
-							st2.executeUpdate();
-							JOptionPane.showMessageDialog(null, "Order placed");
-						} else
-						{
-							String query = "INSERT INTO payment (userID, customerName, cardType, cardNumber, cardExp, cardSecure) VALUES (?,?, ?, ?, ?, ?)";
-							PreparedStatement st2 = dbconn.prepareStatement(query);
-							st2.setInt(1, ID);
-							st2.setString(2, name);
-							st2.setString(3, cardType);
-							st2.setString(4, cardNumber);
-							st2.setInt(5, expDate);
-							st2.setInt(6, cvv);
-							st2.executeUpdate();
-							JOptionPane.showMessageDialog(null, "Payment Success");
+        lblNewLabel = new JLabel("QTY:");
+        lblNewLabel.setBounds(19, 190, 46, 14);
+        contentPane.add(lblNewLabel);
 
-							query = "INSERT INTO customerOrder (userID, orderTime, numOfProducts, cardNumber, orderType) VALUES (?,?, ?, ?, ?)";
-							st2 = dbconn.prepareStatement(query);
-							st2.setInt(1, ID);
-							st2.setString(2, dateTime.toString());
-							st2.setInt(3, numOfProducts);
-							st2.setString(4, cardNumber);
-							st2.setString(5, orderType);
-							st2.executeUpdate();
-							st2.close();
-							res.close();
-						}
+        spinner = new JSpinner();
+        spinner.setBounds(55, 190, 40, 20);
+        contentPane.add(spinner);
 
-						Statement statement = dbconn.createStatement();
-						statement.executeUpdate("Truncate orderItems");
-						dispose();
-						JOptionPane.showMessageDialog(null, "Order placed");
-						Options optionFrame = new Options();
-						optionFrame.setVisible(true);
-					}
-					catch (SQLException ex)
-					{
-						ex.printStackTrace();
-					}
-				}
-			}
-		});
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.gridx = 1;
-		gbc_btnNewButton.gridy = 10;
-		contentPane.add(btnNewButton, gbc_btnNewButton);
-	}
+        loadData(dbconn);
 
-	public void loadUserID(String name, Connection dbconn) {
+        table_1.getColumn("Item").setCellRenderer(new myTableCellRenderer());
+        table_1.getColumn("Description").setCellRenderer(new myTableCellRenderer());
+        table_1.getColumn("Price").setCellRenderer(new myTableCellRenderer());
+        table_1.getColumn("Image").setCellRenderer(new myTableCellRenderer());
+        table_1.getColumn("Availability").setCellRenderer(new myTableCellRenderer());
+    }
 
-		try {
+    class myTableCellRenderer implements TableCellRenderer {
+
+        private Object value;
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
+            table_1.setRowHeight(90);
+            return (Component) value;
+        }
+
+        public Object getValue() {
+            return value;
+
+        }
+    }
+
+    public void loadData(Connection dbconn) {
+
+        try {
 
 
-			String query = "SELECT * FROM user WHERE userName = ?";
-			PreparedStatement st = dbconn.prepareStatement(query);
+            String query = "SELECT * FROM menuItems";
+            PreparedStatement st = dbconn.prepareStatement(query);
 
-			st.setString(1, name);
+            ResultSet rs = st.executeQuery();
 
-			ResultSet rs = st.executeQuery();
+            while (rs.next())
+            {
+                imageLabel = new JLabel();
+                itemName = new JLabel(rs.getNString("itemName"));
+                itemDescription = new JLabel(rs.getNString("itemDescription"));
+                price = new JLabel(rs.getString("itemPrice"));
+                availability = new JLabel(rs.getNString("itemAvailability"));
+                byte[] img = rs.getBytes("itemImage");
+                ImageIcon image = new ImageIcon(img);
+                Image im = image.getImage();
+                Image myimg = im.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                ImageIcon newImage = new ImageIcon(myimg);
+                imageLabel.setIcon(newImage);
+                Object[] data = {itemName, itemDescription, price, imageLabel, availability};
+                ((DefaultTableModel) table_1.getModel()).addRow(data);
+                st.close();
+                rs.close();
 
-			if (rs.next())
-			{
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-				ID = rs.getInt("userID");
+    }
 
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(this, "No Item Found");
-			}
-			rs.close();
-			st.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public void loadItemID(String name, Connection dbconn) {
 
-	public void loadQty(Connection dbconn) {
+        try {
 
-		numOfProducts = 0;
 
-		try
-		{
-			String query = "SELECT * FROM orderItems";
-			PreparedStatement st = dbconn.prepareStatement(query);
+            String query = "SELECT * FROM menuItems WHERE itemName = ?";
+            PreparedStatement st = dbconn.prepareStatement(query);
 
-			ResultSet rs = st.executeQuery();
+            st.setString(1, name);
 
-			while (rs.next())
-			{
-				int qty = rs.getInt("itemQuantity");
-				numOfProducts = numOfProducts + qty;
-			}
-			rs.close();
-			st.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            ResultSet rs = st.executeQuery();
 
+            if (rs.next())
+            {
+
+                ID = rs.getInt("itemID");
+
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "No Item Found");
+            }
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }
