@@ -18,7 +18,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import LoginP.DBConnection;
+import LoginP.*;
 import net.proteanit.sql.DbUtils;
 
 import javax.swing.JButton;
