@@ -207,7 +207,6 @@ public class Cart extends JFrame
 				}
 				Object[] data = {itemName, qty, price};
 				((DefaultTableModel) table_1.getModel()).addRow(data);
-				if (table_1.getRowCount() == 0 && table_1.getColumnCount() == 1)
 			}
 			total = getTotal();
 			lblNewLabel_1.setText(df.format(total));
